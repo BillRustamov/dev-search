@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<main class="messagePage my-xl">
+    <div class="content-box">
+        <div class="message">
+            <a class="backButton" href="{{ request.META.HTTP_REFERER }}">
+                &larr;
+            </a>
+            <h2 class="message__subject">{{ message.subject }}</h2>
+            {% if message.sender %}
+            <a href="{% url 'users:account_detail' pk=message.sender.id %}" class="message__author">
+                {{ message.sender.get_full_name }}
+            </a>
+            {% else %}
+            <i>{{ message.fullname }}</i>
+            <a href="mailto:{{ message.email }}" class="message__author">{{ message.email }}</a>
+            {% endif %}
+            <p class="message__date">{{ message.created|date:"M d, Y, H:m" }}</p>
+            <div class="message__body">{{ message.body|linebreaksbr }}</div>
+        </div>
+    </div>
+</main>
+{% endblock content %}

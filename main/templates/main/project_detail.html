@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<main class="singleProject my-md">
+    <div class="container">
+        <div class="layout">
+            <div class="column column--1of3">
+                <h3 class="singleProject__subtitle">Tools & Stacks</h3>
+                <div class="singleProject__toolStack">
+                    {% for tag in project.tags.all %}
+                    <span class="tag tag--pill tag--sub tag--lg">
+                      <small>{{ tag.name }}</small>
+                    </span>
+                    {% endfor %}
+                </div>
+                <div style="display: flex; flex-direction: column; width: max-content;">
+                    {% if project.source_code %}
+                    <a class="singleProject__liveLink" href="{{ project.source_code }}" target="_blank">
+                        <i class="bi bi-file-earmark-code"></i>
+                        Source Code
+                    </a>
+                    {% endif %}
+                    {% if project.live_demo %}
+                    <a class="singleProject__liveLink" href="{{ project.live_demo }}" target="_blank">
+                        <i class="bi bi-wifi"></i>
+                        Live demo
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="column column--2of3">
+                <img class="singleProject__preview" src="{{ project.photo.url }}" alt="{{ project.title }}"/>
+                <a href="{% url 'users:account_detail' pk=project.owner.id %}" class="singleProject__developer">{{ project.owner.get_full_name }}</a>
+                <h2 class="singleProject__title">{{ project.title }}</h2>
+                <h3 class="singleProject__subtitle">About the Project</h3>
+                <div class="singleProject__info">
+                    {% if project.description %}
+                        {{ project.description|linebreaksbr }}
+                    {% endif %}
+                </div>
+
+                <div class="comments">
+                    <h3 class="singleProject__subtitle">Feedback</h3>
+                    {% if request.user.is_authenticated %}
+                    <form class="form" action="" method="POST">
+                        {% csrf_token %}
+                        <!-- Textarea -->
+                        <div class="form__field">
+                            <label for="formInput#textarea">Comments: </label>
+                            <textarea class="input input--textarea" name="review" id="formInput#textarea"
+                                      placeholder="Write your comments here..."></textarea>
+                        </div>
+                        <input class="btn btn--sub btn--lg" type="submit" value="Leave a comment"/>
+                    </form>
+                    {% else %}
+                    <p>To leave a comment, please <a href="">Log in</a></p>
+                    {% endif %}
+                    <div class="commentList">
+                        {% for review in reviews %}
+                        <div class="comment">
+                            <a href="{% url 'users:account_detail' pk=project.owner.id %}">
+                                <img class="avatar avatar--md" src="{{ review.owner.photo.url }}"
+                                     alt="{{ project.owner.get_full_name }}"/>
+                            </a>
+                            <div class="comment__details">
+                                <a href="{% url 'users:account_detail' pk=project.owner.id %}" class="comment__author">{{ project.owner.get_full_name }}</a>
+                                <p class="comment__info">
+                                    {{ review.body|linebreaksbr }}
+                                </p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</main>
+{% endblock content %}

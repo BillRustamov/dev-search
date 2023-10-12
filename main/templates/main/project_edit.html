@@ -1,0 +1,116 @@
+{% extends 'base.html' %} {% block content %}
+<main class="formPage my-xl">
+  <div class="content-box">
+    <div class="formWrapper">
+      <a class="backButton" href="{{ request.META.HTTP_REFERER }}">
+        <i class="bi bi-arrow-left"></i>
+      </a>
+      <br />
+
+      <form class="form" method="POST" action="" enctype="multipart/form-data">
+        {% csrf_token %} {{ form.as_div }}
+
+        <div>
+          <label for="tag">Tags:</label>
+
+          <div class="tags">
+            {% for tag in project.tags.all %}
+            <span class="tag tag--pill tag--main">
+              <small>{{ tag.name }}</small>
+              &#160;
+              <span
+                id="delete_tag"
+                data-project="{{ project.id }}"
+                data-tag="{{ tag.id }}"
+                style="font-size: 19px; font-weight: 300; padding: 0"
+                >&times;</span
+              >
+            </span>
+            {% endfor %}
+          </div>
+
+          <input
+            type="text"
+            name="tags"
+            class="input"
+            id="tag"
+            data-project="{{ project.id }}"
+          />
+        </div>
+
+        <input
+          class="btn btn--sub btn--lg my-md"
+          type="submit"
+          value="Submit"
+        />
+      </form>
+    </div>
+  </div>
+</main>
+
+<script type="text/javascript">
+  const tagInput = document.querySelector("#tag");
+  const deleteTags = document.querySelectorAll("#delete_tag");
+  const projectId = tagInput.dataset.project;
+
+  function addTagHandler(event) {
+    const inputValue = event.target.value; // "python"
+    const lastCharachter = inputValue[inputValue.length - 1];
+
+    if (lastCharachter === " " || lastCharachter == ",") {
+      const tagName = inputValue.slice(0, inputValue.length - 1);
+
+      if (tagName.trim().length > 0) {
+        // http://localhost:8000/api/tags/create/
+        fetch("http://127.0.0.1:8000/api/tags/create/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ tagName: tagName, projectId: projectId }),
+        })
+          .then((response) => response.json())
+          .then((data) => JSON.parse(data))
+          .then((data) => {
+            const newTag = `<span class="tag tag--pill tag--main">
+                                            <small>${data.tag}</small>
+                                            &#160;
+                                            <span id="delete_tag" style="font-size: 19px; font-weight: 300; padding: 0;">&times;</span>
+                                        </span>`;
+
+            let parentEl = document.querySelector(".tags");
+            parentEl.innerHTML += newTag;
+
+            document.querySelector("#tag").value = "";
+          });
+      }
+    }
+  }
+  function deleteTagHandler(event) {
+    const projectId = event.target.dataset.project;
+    const tagId = event.target.dataset.tag;
+
+    fetch("http://127.0.0.1:8000/api/tags/delete/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ tagId, projectId }),
+        })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.status === 'ok') {
+            event.target.parentElement.remove()
+        }
+      });
+    }
+
+    tagInput.addEventListener("keyup", addTagHandler);
+    // [x, x, x, ...]
+    deleteTags.forEach((deleteTag) => {
+    // x
+    deleteTag.addEventListener("click", deleteTagHandler);
+  });
+</script>
+
+{% endblock content %}

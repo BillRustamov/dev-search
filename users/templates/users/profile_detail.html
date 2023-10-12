@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<main class="profile my-md">
+    <div class="container">
+        <div class="layout">
+            <div class="column column--1of3">
+                <div class="card text-center">
+                    <div class="card__body dev">
+                        <img class="avatar avatar--xl" src="{{ profile.photo.url }}"/>
+                        <h2 class="dev__name">{{ profile.get_full_name }}</h2>
+                        <p class="dev__title">
+                            {% if profile.short_intro %}
+                            {{ profile.short_intro }}
+                            {% endif %}
+                        </p>
+                        <p class="dev__location">
+                            {% if profile.location %}
+                            Based in {{ profile.location }}
+                            {% endif %}
+                        </p>
+                        <ul class="dev__social">
+                            {% if profile.social_github %}
+                            <li>
+                                <a title="Github" href="{{ profile.social_github }}" target="_blank">
+                                    <i class="bi bi-github"></i>
+                                </a>
+                            </li>
+                            {% endif %}
+                            {% if profile.social_instagram %}
+                            <li>
+                                <a title="Instagram" href="{{ profile.social_instagram }}" target="_blank">
+                                    <i class="bi bi-instagram"></i>
+                                </a>
+                            </li>
+                            {% endif %}
+                            {% if profile.social_facebook %}
+                            <li>
+                                <a title="Facebook" href="{{ profile.social_facebook }}" target="_blank">
+                                    <i class="bi bi-facebook"></i>
+                                </a>
+                            </li>
+                            {% endif %}
+                            {% if profile.social_linkedin %}
+                            <li>
+                                <a title="LinkedIn" href="{{ profile.social_linkedin }}" target="_blank">
+                                    <i class="bi bi-linkedin"></i>
+                                </a>
+                            </li>
+                            {% endif %}
+                            {% if profile.social_website %}
+                            <li>
+                                <a title="Personal Website" href="{{ profile.social_website }}" target="_blank">
+                                    <i class="bi bi-globe"></i>
+                                </a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                        {% if request.user != profile %}
+                        <a href="{% url 'users:send_message' pk=profile.id %}" class="btn btn--sub btn--lg">Send Message </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="column column--2of3">
+                <div class="devInfo">
+                    <h3 class="devInfo__title">About Me</h3>
+                    <p class="devInfo__about">
+                        {% if profile.description %}
+                        {{ profile.description }}
+                        {% else %}
+                        No Bio
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="devInfo">
+                    <h3 class="devInfo__title">Skills</h3>
+                    <div class="devInfo__skills">
+                        {% for skill in dev_skills %}
+                        <div class="devSkill">
+                            <h4 class="devSkill__title">{{ skill.name }}</h4>
+                            <p class="devSkill__info">
+                                {{ skill.description }}
+                            </p>
+                        </div>
+                        {% empty %}
+                        No skills
+                        {% endfor %}
+                        <h3 class="devInfo__subtitle">Other Skills</h3>
+                        <div class="devInfo__otherSkills">
+                            {% for skill in other_skills %}
+                            <span class="tag tag--pill tag--sub tag--lg">
+                                <small>{{ skill.name }}</small>
+                            </span>
+                            {% empty %}
+                            No Skills
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="devInfo">
+                    <h3 class="devInfo__title">Projects</h3>
+                    <div class="grid grid--two">
+                        {% for project in profile.project_set.all %}
+                        <div class="column">
+                            <div class="card project">
+                                <a href="{% url 'main:project_detail' pk=project.id %}" class="project">
+                                    <img class="project__thumbnail" src="{{ project.photo.url }}" alt="{{ project.title }}"/>
+                                    <div class="card__body">
+                                        <h3 class="project__title">{{ project.title }}</h3>
+                                        <p><a class="project__author" href="{% url 'users:account_detail' pk=project.owner.id %}">By {{ project.owner.get_full_name }}</a></p>
+                                        <br>
+                                        <div class="project__tags">
+                                            {% for tag in project.tags.all %}
+                                            <span class="tag tag--pill tag--main">
+                                              <small>{{ tag.name }}</small>
+                                            </span>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock content %}

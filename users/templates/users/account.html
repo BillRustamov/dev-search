@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<main class="settingsPage request.user my-md">
+    <div class="container">
+        <div class="layout">
+            <div class="column column--1of3">
+                <div class="card text-center">
+                    <div class="card__body dev">
+                        <a class="tag tag--pill tag--main settings__btn" href="{% url 'users:account_update' %}"><i class="bi bi-pencil-square"></i> Edit</a>
+                        <img class="avatar avatar--xl dev__avatar"
+                             src="{{ request.user.photo.url }}"
+                            alt="{{ request.user.get_full_name }}"
+                        />
+                        <h2 class="dev__name">{{ request.user.get_full_name }}</h2>
+                        <p class="dev__title">
+                            {% if not request.user.short_intro %}
+                            No "short intro" set
+                            {% else %}
+                            {{ request.user.short_intro }}
+                            {% endif %}
+                        </p>
+                        <p class="dev__location">
+                            {% if not request.user.location %}
+                            No "location" set
+                            {% else %}
+                            Based in {{ request.user.location }}
+                            {% endif %}
+                        </p>
+                        <ul class="dev__social">
+                            {% if request.user.social_github %}
+                            <li>
+                                <a title="Github" href="{{ request.user.social_github }}" target="_blank">
+                                    <i class="bi bi-github"></i>
+                                </a>
+                            </li>
+                            {% endif %}
+                            {% if request.user.social_instagram %}
+                            <li>
+                                <a title="Instagram" href="{{ request.user.social_instagram }}" target="_blank">
+                                    <i class="bi bi-instagram"></i>
+                                </a>
+                            </li>
+                            {% endif %}
+                            {% if request.user.social_facebook %}
+                            <li>
+                                <a title="Facebook" href="{{ request.user.social_facebook }}" target="_blank">
+                                    <i class="bi bi-facebook"></i>
+                                </a>
+                            </li>
+                            {% endif %}
+                            {% if request.user.social_linkedin %}
+                            <li>
+                                <a title="LinkedIn" href="{{ request.user.social_linkedin }}" target="_blank">
+                                    <i class="bi bi-linkedin"></i>
+                                </a>
+                            </li>
+                            {% endif %}
+                            {% if request.user.social_website %}
+                            <li>
+                                <a title="Personal Website" href="{{ request.user.social_website }}" target="_blank">
+                                    <i class="bi bi-globe"></i>
+                                </a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                        <a href="#" class="btn btn--sub btn--lg">Send Message </a>
+                    </div>
+                </div>
+            </div>
+            <div class="column column--2of3">
+                <div class="devInfo">
+                    <h3 class="devInfo__title">About Me</h3>
+                    <p class="devInfo__about">
+                        {% if not request.user.description %}
+                        No "description" set
+                        {% else %}
+                        {{ request.user.description|linebreaksbr }}
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="settings">
+                    <h3 class="settings__title">Skills</h3>
+                    <a class="tag tag--pill tag--sub settings__btn tag--lg" href="{% url 'users:add_skill' %}">
+                        + Add Skill
+                    </a>
+                </div>
+
+                <table class="settings__table">
+                    {% for skill in skills %}
+                    <tr>
+                        <td class="settings__tableInfo">
+                            <h4>{{ skill.name }}</h4>
+                            <p>
+                                {{ skill.description|linebreaksbr }}
+                            </p>
+                        </td>
+                        <td class="settings__tableActions">
+                            <a class="tag tag--pill tag--main settings__btn" href="{% url 'users:edit_skill' pk=skill.id %}">
+                                <i class="bi bi-pencil-square"></i>
+                                Edit
+                            </a>
+                            <a class="tag tag--pill tag--main settings__btn" href="{% url 'users:delete_skill' pk=skill.id %}"><i
+                                    class="im im-x-mark-circle-o"></i>
+                                Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+
+                <div class="settings">
+                    <h3 class="settings__title">Projects</h3>
+                    <a class="tag tag--pill tag--sub settings__btn tag--lg" href="{% url 'main:add_project' %}">+ Add
+                        Project</a>
+                </div>
+
+                <table class="settings__table">
+                    {% for project in projects %}
+                    <tr>
+                        <td class="settings__thumbnail">
+                            <a href="{% url 'main:project_detail' pk=project.id %}"><img src="{{ project.photo.url }}" alt="{{ project.title }}" /></a>
+                        </td>
+                        <td class="settings__tableInfo">
+                            <a href="{% url 'main:project_detail' pk=project.id %}">{{ project.title }}</a>
+                            <p>
+                                {{ project.description|linebreaksbr }}
+                            </p>
+                        </td>
+                        <td class="settings__tableActions">
+                            <a class="tag tag--pill tag--main settings__btn" href="{% url 'main:edit_project' pk=project.id %}">
+                                <i class="bi bi-pencil-square"></i>
+                                Edit
+                            </a>
+                            <a class="tag tag--pill tag--main settings__btn" href="{% url 'main:delete_project' pk=project.id %}"><i
+                                    class="im im-x-mark-circle-o"></i>
+                                Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock content %}

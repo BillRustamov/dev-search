@@ -1,0 +1,71 @@
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert--{{ message.tags }}">
+            <p class="alert__message">{{ message }}</p>
+            <button class="alert__close">⨯</button>
+        </div>
+    {% endfor %}
+{% endif %}
+
+<style>
+    .alert {
+        position: fixed;
+        top: 7em;
+        left: 50%;
+        transform: translate(-50%);
+        z-index: 9;
+    }
+</style>
+
+<script type="text/javascript">
+    const btnClose = document.querySelector('.alert__close');
+
+    if (btnClose) {
+        const message = document.querySelector('.alert');
+
+        function closeMessage() {
+            message.style = 'display: none';
+        }
+
+        btnClose.addEventListener('click', closeMessage);
+    }
+</script>
+
+<!--
+div.alert>p.alert__message{This is an error message}+btn.alert__close{⨯}
+<div class="alert">
+    <p class="alert__message">This is an error message</p>
+    <button class="alert__close">⨯</button>
+</div>
+
+.alert => <div class="alert"></div>
+#alert => <div id="alert"></div>
+
+p.alert => <p class="alert"></p>
+p#alert => <p id="alert"></p>
+
+btn:s => <button type="submit"></button>
+btn:r => <button type="reset"></button>
+
+form:post => <form action="" method="post"></form>
+
+div>a+ul>li{Salom}*5 =>
+<div>
+    <a href=""></a>
+    <ul>
+        <li>Salom</li>
+        <li>Salom</li>
+        <li>Salom</li>
+        <li>Salom</li>
+        <li>Salom</li>
+    </ul>
+</div>
+
+div>p{Salom}+span+div =>
+<div>
+    <p>Salom</p>
+    <span></span>
+    <div></div>
+</div>
+-->
+
