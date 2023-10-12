@@ -30,6 +30,9 @@ SECRET_KEY = env.str('DJANGO_SECRET_KEY')
 DEBUG = False
 
 ALLOWED_HOSTS = ["127.0.0.1", "localhost", "dev-search-my-project.up.railway.app"]
+CSRF_TRUSTED_ORIGINS = [
+    'https://dev-search-my-project.up.railway.app'
+]
 
 
 # Application definition
